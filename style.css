@@ -2,3 +2,5 @@
 
 /* Version 1.3 interactive boards and resource nodes */
 .map-node.shape-rectangle{border-radius:0}.map-node.shape-pill{border-radius:40px}.map-node.shape-diamond{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);width:190px;min-height:92px;padding:25px 35px}.map-node:has(.node-thumbnail){flex-direction:column;gap:4px;min-height:90px}.node-thumbnail{display:block;max-width:120px;max-height:75px;object-fit:contain;border-radius:3px}.node-jump{position:absolute;left:-9px;top:-9px;border:1px solid #899db8;background:white;color:#20344d;border-radius:50%;width:25px;height:25px;z-index:4}.image-dialog{max-width:min(90vw,1000px);max-height:88vh;overflow:auto}.image-dialog img{max-width:100%;max-height:76vh;object-fit:contain;display:block;margin-top:12px}#imageViewer{border:1px solid #cbd5e1;border-radius:12px;padding:15px}#imageViewer::backdrop{background:#000a}
+
+.compliance-link{display:inline-flex;align-items:center;padding:9px 10px;background:#315aaa;color:#fff;border-radius:7px;text-decoration:none;font-size:12px;font-weight:600}.compliance-link:hover{background:#234783}
