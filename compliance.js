@@ -80,7 +80,7 @@ function applies(rule){
  if(rule.condition==='suspended'){if(!Array.isArray(p.floor)||!p.floor.length)return 'unknown';return p.floor.some(x=>x.startsWith('suspended'))?'yes':'no'}
  return 'unknown';
 }
-function inspectionFor(id){return state.inspection[id]||{actual:'',outcome:'Not inspected',defect:'',rectification:'',evidence:'',inspector:'',date:'',reinspection:'',status:'Open'}}
+function inspectionFor(id){if(!state.inspection[id])state.inspection[id]={actual:'',outcome:'Not inspected',defect:'',rectification:'',evidence:'',inspector:'',date:'',reinspection:'',status:'Open'};return state.inspection[id]}
 function node(tag,cls,txt){let n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
 function field(container,label,key,record,kind='text'){let wrap=node('label'),span=node('span','',label);wrap.appendChild(span);let input=document.createElement(kind==='textarea'?'textarea':kind==='select'?'select':'input');if(kind==='select')opt(input,['Not inspected','Compliant','Non-compliant','Information required','Requires professional review'].map(s=>[s,s]));if(kind==='number')input.type='number';input.value=record[key]||'';input.addEventListener('change',()=>{record[key]=input.value;save();renderInspection();renderDefects()});wrap.appendChild(input);container.appendChild(wrap)}
 function renderInspection(){
