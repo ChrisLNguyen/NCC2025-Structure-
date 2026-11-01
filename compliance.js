@@ -94,7 +94,7 @@ function renderInspection(){
   toggle.onclick=()=>{detailRow.hidden=!detailRow.hidden;toggle.textContent=detailRow.hidden?'Details ▾':'Close ▴'};
   let summary=node('p');let strong=node('strong','',r.summary);summary.appendChild(strong);detail.appendChild(summary);
   for(let [label,value] of [['Provisional source',r.reference],['Required measurement',r.limit],['How to inspect / physically measure',r.method],['Defect-specific rectification guidance',r.rectification]]){let p=node('p');p.appendChild(node('strong','',label+': '));p.appendChild(document.createTextNode(value));detail.appendChild(p)}
-  if(a!=='yes'){detail.appendChild(node('p','status warn','Not active for this project. Resolve applicability before inspection.'));continue}
+  if(a!=='yes'){detail.appendChild(node('p','status warn','Not active for this project. Resolve applicability before inspection.'));return}
   let grid=node('div','grid two');detail.appendChild(grid);
   field(grid,'Actual readings, units and locations','actual',record);
   field(grid,'Inspection outcome','outcome',record,'select');
