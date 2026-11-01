@@ -11,41 +11,59 @@
  <div class="actions"><span id="saveState" class="muted">Local draft</span><button id="exportJson">Export JSON</button><button id="exportCsv">Export inspection CSV</button><label class="upload">Import JSON<input id="importJson" type="file" accept=".json,application/json" hidden></label></div>
 </header>
 <div class="banner" role="note"><strong>Preliminary tool, not certification.</strong> No NCC 2025 numerical requirement is accepted as verified until the exact adopted source, edition, clause, applicability and evidence have been independently checked. Data stays in this browser unless exported. Do not enter sensitive client information on shared devices.</div>
+<div class="start-guide"><div><strong>Start here</strong><span>Step 1: Enter project details</span></div><span class="guide-arrow">→</span><div><strong>Then</strong><span>Step 2: Select finishes and products</span></div><span class="guide-arrow">→</span><div><strong>Next</strong><span>Review requirements and inspections</span></div></div>
 <nav class="tabs" aria-label="Compliance modules">
-<button type="button" data-tab="setup" aria-current="page">1. Project setup</button>
-<button type="button" data-tab="finishes">2. Finish-first selections</button>
-<button type="button" data-tab="readiness">3. Design gate</button>
+<button type="button" data-tab="setup" aria-current="page">STEP 1 · Project setup</button>
+<button type="button" data-tab="finishes">STEP 2 · Building finishes</button>
+<button type="button" data-tab="readiness">3. Design readiness</button>
 <button type="button" data-tab="inspection">4. WBS inspections</button>
 <button type="button" data-tab="defects">5. Defects</button>
 </nav>
 <main class="wrap">
 <section data-panel="setup">
-<h1>Project setup</h1><p class="lead">Set the site and design classifications. The system activates the relevant inspection families and flags missing information.</p>
-<div class="panel grid two">
-<label>Project reference<input id="projectRef" placeholder="e.g. DWELLING-001" maxlength="80"></label>
-<label>Project address or site identifier<input id="projectAddress" placeholder="Optional, avoid private client details" maxlength="160"></label>
-<label>Applicable NCC edition<select id="nccEdition"><option value="NCC 2025">NCC 2025 (to be confirmed for permit)</option><option value="Review required">Edition requires review</option></select></label>
+<div class="step-heading"><span class="step-label">STEP 1 OF 2</span><h1>Set up your project</h1><p class="lead">Enter what you know about the building and site. Leave unknown classifications as <strong>Not established</strong> rather than guessing. You can return to this step at any time.</p></div>
+<div class="panel">
+<h2>A. Identify the project</h2>
+<p class="section-hint">Give the project a reference so that inspection records can be identified. This prototype is for Victorian <strong>Class 1a dwellings only</strong>.</p>
+<div class="grid two">
+<label>Project reference <span class="required">*</span><input id="projectRef" placeholder="e.g. House 001" maxlength="80"><span class="field-help">Use a short name or project number.</span></label>
+<label>Project address or site identifier<input id="projectAddress" placeholder="e.g. Lot and street or project code" maxlength="160"><span class="field-help">Optional for testing. Avoid confidential client information.</span></label>
+<label>Applicable NCC edition<select id="nccEdition"><option value="NCC 2025">NCC 2025 (subject to permit verification)</option><option value="Review required">Edition requires review</option></select></label>
 <label>Permit / approval status<select id="permitStatus"><option value="">Select status</option><option>Concept / no permit</option><option>Permit application</option><option>Permit issued</option><option>Existing approved project</option></select></label>
-<label>NCC climate zone<select id="climate"><option value="">Not established</option></select></label>
-<label>AS 2870 site classification<select id="soil"><option value="">Not established</option></select></label>
+</div></div>
+<div class="panel">
+<h2>B. Enter site classifications</h2>
+<p class="section-hint">These values affect which NCC requirements apply. Use the geotechnical report, wind assessment, planning information and relevant maps. Unknown values can remain blank.</p>
+<div class="grid two">
+<label>NCC climate zone<select id="climate"><option value="">Not established</option></select><span class="field-help">Confirm from an authoritative NCC climate zone source.</span></label>
+<label>AS 2870 soil classification<select id="soil"><option value="">Not established</option></select><span class="field-help">Use the geotechnical report, not a guess.</span></label>
 <label>Wind classification<select id="wind"><option value="">Not established</option></select></label>
-<label>Bushfire attack level<select id="bal"><option value="">Not established</option></select></label>
+<label>Bushfire attack level (BAL)<select id="bal"><option value="">Not established</option></select></label>
 <label>Termite management status<select id="termite"><option value="">Undetermined</option><option value="required">Required / nominated</option><option value="not-required">Not required (verify basis)</option></select></label>
 <label>Flood designation<select id="flood"><option value="">Undetermined</option><option value="yes">Designated flood hazard area</option><option value="no">Not designated (verify basis)</option></select></label>
-<label>Floor structure (may select more than one)<select id="floor" multiple size="3"><option value="slab">Slab-on-ground</option><option value="suspended-timber">Suspended timber</option><option value="suspended-steel">Suspended steel</option></select><span class="help">Hold Ctrl/Cmd to select multiple floor systems.</span></label>
-<label>Wall framing construction<select id="wallFrame"><option value="">Not established</option><option value="timber">Timber frame</option><option value="steel">Steel frame</option><option value="masonry">Masonry wall</option><option value="mixed">Mixed systems</option></select></label>
-<label class="wide">Evidence for project classifications<textarea id="siteEvidence" rows="3" placeholder="Geotechnical report, wind assessment, survey, climate map, bushfire assessment and document references"></textarea></label>
-</div>
+<label class="wide">Source documents and supporting evidence<textarea id="siteEvidence" rows="3" placeholder="e.g. Geotechnical report reference, wind assessment date, BAL report, survey drawing number"></textarea><span class="field-help">Include document names, numbers and dates where available.</span></label>
+</div></div>
 <div class="panel">
-<h2>Source controls</h2>
-<p>Site classifications are user-entered project facts, not inferred from the postcode. The project must confirm the edition and any Victorian amendments or transitional provisions before regulatory checks are released.</p>
-</div>
+<h2>C. Identify the proposed structural systems</h2>
+<p class="section-hint">Select any ground floor systems that will be used. These are construction choices, not confirmed DTS compliance outcomes.</p>
+<div class="grid two">
+<fieldset id="floor" class="choice-set"><legend>Ground floor construction</legend>
+<label><input type="checkbox" value="slab"> Slab-on-ground</label>
+<label><input type="checkbox" value="suspended-timber"> Suspended timber floor</label>
+<label><input type="checkbox" value="suspended-steel"> Suspended steel floor</label>
+</fieldset>
+<label>Wall framing construction<select id="wallFrame"><option value="">Not established</option><option value="timber">Timber frame</option><option value="steel">Steel frame</option><option value="masonry">Masonry wall</option><option value="mixed">Mixed systems</option></select><span class="field-help">Frame dimensions will be determined from structural and thermal compliance requirements.</span></label>
+</div></div>
+<div class="step-actions"><span class="field-help">Your entries are saved in this browser. Export JSON to keep a backup.</span><button id="goFinishes" type="button" class="primary large">Continue to Step 2: Select finishes →</button></div>
 </section>
 <section data-panel="finishes" hidden>
-<h1>Finish-first product selections</h1><p class="lead">Record selected systems before fixing supporting construction. Product dimensions shown in the catalogue are indicative options only and must be checked against the manufacturer's current technical data.</p>
+<div class="step-heading"><span class="step-label">STEP 2 OF 2</span><h1>Select building finishes and products</h1><p class="lead">Choose the finished materials first. The agent identifies the structural, insulation, support, fixing and weatherproofing details that must be resolved before design release.</p></div>
+<div class="panel instructions"><h2>How to complete this step</h2>
+<ol><li>Select the <strong>product category</strong> and <strong>system</strong>, such as brick masonry and brick veneer.</li><li>Choose a proposed <strong>size or thickness</strong>. Confirm the exact manufacturer dimensions before approval.</li><li>Enter the <strong>manufacturer, product name and installation manual link</strong>, if available.</li><li>Use <strong>Add another product</strong> for roofing, windows, flooring, waterproofing or another wall elevation.</li></ol>
+<p class="field-help">You do not need to know all products now. Missing selections will appear in Step 3, Design Readiness, and prevent design release.</p></div>
 <div id="finishCards" class="stack"></div>
-<button type="button" id="addFinish" class="primary">+ Add product or building zone</button>
-<div class="panel"><h2>Supporting construction must follow the finish</h2><p>For brick veneer, review cavity, footing support, frame location and weatherproofing. For bulk insulation, confirm installed thickness and whole-wall performance before determining stud depth. Other finishes trigger their own support, fixing and junction investigations.</p></div>
+<div class="step-actions"><button type="button" id="backSetup">← Back to Step 1</button><button type="button" id="addFinish" class="secondary">+ Add another product or zone</button><button type="button" id="goReadiness" class="primary large">Review design readiness →</button></div>
+<div class="panel"><h2>How selections affect design</h2><p>A brick veneer selection triggers checks on cavity, wall ties, footing support and the wall envelope. Bulk insulation requires verification of installed thickness and whole-wall thermal performance before the stud width can be finalised. Manufacturer details and NCC provisions still need source verification.</p></div>
 </section>
 <section data-panel="readiness" hidden>
 <h1>Backward design readiness</h1><p class="lead">Outstanding mandatory selections and source evidence prevent the design from being labelled ready for release.</p>
