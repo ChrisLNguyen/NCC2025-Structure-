@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NCC 2025 | Class 1a Compliance Agent</title>
+<link rel="stylesheet" href="compliance.css">
+</head>
+<body>
+<header class="topbar">
+ <div class="brand"><a href="index.html" class="back">← Knowledge Map</a><div><strong>NCC 2025 Compliance Agent</strong><small>Victorian Class 1a dwelling | preliminary design and site QA</small></div></div>
+ <div class="actions"><span id="saveState" class="muted">Local draft</span><button id="exportJson">Export JSON</button><button id="exportCsv">Export inspection CSV</button><label class="upload">Import JSON<input id="importJson" type="file" accept=".json,application/json" hidden></label></div>
+</header>
+<div class="banner" role="note"><strong>Preliminary tool, not certification.</strong> No NCC 2025 numerical requirement is accepted as verified until the exact adopted source, edition, clause, applicability and evidence have been independently checked. Data stays in this browser unless exported. Do not enter sensitive client information on shared devices.</div>
+<nav class="tabs" aria-label="Compliance modules">
+<button type="button" data-tab="setup" aria-current="page">1. Project setup</button>
+<button type="button" data-tab="finishes">2. Finish-first selections</button>
+<button type="button" data-tab="readiness">3. Design gate</button>
+<button type="button" data-tab="inspection">4. WBS inspections</button>
+<button type="button" data-tab="defects">5. Defects</button>
+</nav>
+<main class="wrap">
+<section data-panel="setup">
+<h1>Project setup</h1><p class="lead">Set the site and design classifications. The system activates the relevant inspection families and flags missing information.</p>
+<div class="panel grid two">
+<label>Project reference<input id="projectRef" placeholder="e.g. DWELLING-001" maxlength="80"></label>
+<label>Project address or site identifier<input id="projectAddress" placeholder="Optional, avoid private client details" maxlength="160"></label>
+<label>Applicable NCC edition<select id="nccEdition"><option value="NCC 2025">NCC 2025 (to be confirmed for permit)</option><option value="Review required">Edition requires review</option></select></label>
+<label>Permit / approval status<select id="permitStatus"><option value="">Select status</option><option>Concept / no permit</option><option>Permit application</option><option>Permit issued</option><option>Existing approved project</option></select></label>
+<label>NCC climate zone<select id="climate"><option value="">Not established</option></select></label>
+<label>AS 2870 site classification<select id="soil"><option value="">Not established</option></select></label>
+<label>Wind classification<select id="wind"><option value="">Not established</option></select></label>
+<label>Bushfire attack level<select id="bal"><option value="">Not established</option></select></label>
+<label>Termite management status<select id="termite"><option value="">Undetermined</option><option value="required">Required / nominated</option><option value="not-required">Not required (verify basis)</option></select></label>
+<label>Flood designation<select id="flood"><option value="">Undetermined</option><option value="yes">Designated flood hazard area</option><option value="no">Not designated (verify basis)</option></select></label>
+<label>Floor structure (may select more than one)<select id="floor" multiple size="3"><option value="slab">Slab-on-ground</option><option value="suspended-timber">Suspended timber</option><option value="suspended-steel">Suspended steel</option></select><span class="help">Hold Ctrl/Cmd to select multiple floor systems.</span></label>
+<label>Wall framing construction<select id="wallFrame"><option value="">Not established</option><option value="timber">Timber frame</option><option value="steel">Steel frame</option><option value="masonry">Masonry wall</option><option value="mixed">Mixed systems</option></select></label>
+<label class="wide">Evidence for project classifications<textarea id="siteEvidence" rows="3" placeholder="Geotechnical report, wind assessment, survey, climate map, bushfire assessment and document references"></textarea></label>
+</div>
+<div class="panel">
+<h2>Source controls</h2>
+<p>Site classifications are user-entered project facts, not inferred from the postcode. The project must confirm the edition and any Victorian amendments or transitional provisions before regulatory checks are released.</p>
+</div>
+</section>
+<section data-panel="finishes" hidden>
+<h1>Finish-first product selections</h1><p class="lead">Record selected systems before fixing supporting construction. Product dimensions shown in the catalogue are indicative options only and must be checked against the manufacturer's current technical data.</p>
+<div id="finishCards" class="stack"></div>
+<button type="button" id="addFinish" class="primary">+ Add product or building zone</button>
+<div class="panel"><h2>Supporting construction must follow the finish</h2><p>For brick veneer, review cavity, footing support, frame location and weatherproofing. For bulk insulation, confirm installed thickness and whole-wall performance before determining stud depth. Other finishes trigger their own support, fixing and junction investigations.</p></div>
+</section>
+<section data-panel="readiness" hidden>
+<h1>Backward design readiness</h1><p class="lead">Outstanding mandatory selections and source evidence prevent the design from being labelled ready for release.</p>
+<div id="readinessSummary"></div><div id="readinessList" class="stack"></div>
+</section>
+<section data-panel="inspection" hidden>
+<h1>Construction WBS and manual inspections</h1>
+<p class="lead">Applicable is the first column. Required items are activated automatically, while conditional tasks depend on recorded site conditions and building systems. Expand a row to inspect and record defects.</p>
+<div class="filterbar"><label>Construction stage<select id="stageFilter"><option value="">All stages</option></select></label><label>Search requirements<input id="searchWbs" placeholder="e.g. subfloor, wall, flashing"></label><label><input id="showInactive" type="checkbox"> Show excluded and unresolved</label></div>
+<div class="scroll"><table class="register"><thead><tr><th>Applicable</th><th>WBS</th><th>Inspection requirement</th><th>Compliance / source status</th><th>Inspection outcome</th><th></th></tr></thead><tbody id="inspectionRows"></tbody></table></div>
+<p class="help">Automatic applicability is not an indication of compliance. Pending source verification means no numeric result can be certified by the software.</p>
+</section>
+<section data-panel="defects" hidden>
+<h1>Defects and rectification register</h1><p class="lead">Records retain the original finding, proposed corrective action, verification evidence and close-out history.</p>
+<div id="defectList" class="stack"></div>
+</section>
+</main>
+<template id="finishTemplate"><article class="panel finishCard">
+<div class="between"><h2>Product selection</h2><button class="removeFinish danger" type="button">Remove</button></div>
+<div class="grid two">
+<label>Zone / location<input data-field="zone" placeholder="e.g. North elevation"></label>
+<label>Product category<select data-field="category"></select></label>
+<label>System / finish<select data-field="system"></select></label>
+<label>Nominal dimension<select data-field="size"></select></label>
+<label>Custom / confirmed dimension<input data-field="actualSize" placeholder="Actual product size and unit"></label>
+<label>Manufacturer<input data-field="manufacturer" placeholder="Manufacturer name"></label>
+<label>Product / model<input data-field="model" placeholder="Product identifier"></label>
+<label>Installation manual / datasheet URL<input data-field="manualUrl" type="url" placeholder="https://manufacturer..."></label>
+<label class="wide">Installation specification / design notes<textarea data-field="notes" rows="2" placeholder="Fixings, cavity, rebates, framing, membranes, junctions, design dependencies"></textarea></label>
+</div>
+<div class="dependency"></div>
+</article></template>
+<div id="notice" role="status" aria-live="polite"></div>
+<script src="compliance.js"></script>
+</body></html>
