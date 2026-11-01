@@ -42,8 +42,8 @@ opt($('soil'),['A','S','M','H1','H2','E','P'].map(x=>[x,x]));
 opt($('wind'),['N1','N2','N3','N4','N5','N6','C1','C2','C3','C4'].map(x=>[x,x]));
 opt($('bal'),['BAL-LOW','BAL-12.5','BAL-19','BAL-29','BAL-40','BAL-FZ'].map(x=>[x,x]));
 let fields=['projectRef','projectAddress','nccEdition','permitStatus','climate','soil','wind','bal','termite','flood','wallFrame','siteEvidence','floor'];
-function setField(id,v){if(id==='floor'){$(id).querySelectorAll('option').forEach(o=>o.selected=(v||[]).includes(o.value))}else $(id).value=v??''}
-fields.forEach(id=>{if(Object.prototype.hasOwnProperty.call(state.project,id))setField(id,state.project[id]);let el=$(id);el.addEventListener('change',()=>{state.project[id]=id==='floor'?[...el.selectedOptions].map(o=>o.value):el.value;save();renderReadiness();renderInspection()});if(el.tagName==='INPUT'||el.tagName==='TEXTAREA')el.addEventListener('input',()=>{state.project[id]=el.value;save()})});
+function setField(id,v){if(id==='floor'){$(id).querySelectorAll('input[type="checkbox"]').forEach(o=>o.checked=(v||[]).includes(o.value))}else $(id).value=v??''}
+fields.forEach(id=>{if(Object.prototype.hasOwnProperty.call(state.project,id))setField(id,state.project[id]);let el=$(id);el.addEventListener('change',()=>{state.project[id]=id==='floor'?[...el.querySelectorAll('input:checked')].map(o=>o.value):el.value;save();renderReadiness();renderInspection()});if(el.tagName==='INPUT'||el.tagName==='TEXTAREA')el.addEventListener('input',()=>{state.project[id]=el.value;save()})});
 function updateFinish(id,key,value){let f=state.finishes.find(x=>x.id===id);if(!f)return;f[key]=value;if(key==='category'){f.system=categories[value].systems[0];f.size=categories[value].sizes[0]}save();renderFinishes();renderReadiness();renderInspection()}
 function renderFinishes(){
  let root=$('finishCards');root.replaceChildren();
@@ -113,6 +113,7 @@ function renderDefects(){let root=$('defectList');root.replaceChildren();let fai
 for(let s of [...new Set(rules.map(x=>x.stage))]){let option=document.createElement('option');option.textContent=s;option.value=s;$('stageFilter').appendChild(option)}
 ['stageFilter','searchWbs','showInactive'].forEach(id=>$(id).addEventListener(id==='searchWbs'?'input':'change',renderInspection));
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-panel]').forEach(x=>x.hidden=x.dataset.panel!==b.dataset.tab);document.querySelectorAll('.tabs button').forEach(x=>x.removeAttribute('aria-current'));b.setAttribute('aria-current','page');renderReadiness();renderInspection();renderDefects()});
+for(const [id,tab] of [['goFinishes','finishes'],['backSetup','setup'],['goReadiness','readiness']]) {document.getElementById(id)?.addEventListener('click',()=>{document.querySelector('.tabs button[data-tab="'+tab+'"]').click();window.scrollTo(0,0)})}
 function download(name,contents,type){const blob=new Blob([contents],{type});const url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 $('exportJson').onclick=()=>download('ncc-compliance-project.json',JSON.stringify(state,null,2),'application/json');
 const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
