@@ -1,5 +1,36 @@
 # Construction Knowledge Map
 
+## Test the NCC 2025 Compliance Agent (development version)
+
+This prototype is on the `feature/ncc-compliance-agent` branch. It does not change the live Knowledge Map.
+
+### Windows: download and open the application
+
+1. Open the [development branch](https://github.com/ChrisLNguyen/NCC2025-Structure-/tree/feature/ncc-compliance-agent).
+2. Select **Code → Download ZIP**.
+3. In **Downloads**, right-click the ZIP file and choose **Extract All**. Do **not** open `compliance.html` directly inside the ZIP archive or a temporary compressed folder.
+4. Open the **extracted** folder. Its name may resemble `NCC2025-Structure--feature-ncc-compliance-agent`. There is no folder literally named `NCC Compliance Agent`.
+5. In that folder, locate **`compliance.html`**, **`compliance.css`** and **`compliance.js`**. Keep them together.
+6. Double-click **`compliance.html`** to launch it in your browser. You should see a styled heading, progress guide and two clear steps.
+
+### Using the prototype
+
+- **Step 1: Project setup.** Enter a reference, site classifications and building system information. Leave unknown classifications as `Not established`. Click **Continue to Step 2**.
+- **Step 2: Building finishes.** Select wall finishes, bulk insulation and other products, entering manufacturer documents where available. Click **Review design readiness**.
+- Continue to the WBS inspections and defect register. Use **Export JSON** for a project backup and **Export inspection CSV** for the checklist.
+- This is a local browser prototype, not a cloud-connected application. Testing in a private browser window or on another computer will not automatically display the same saved data.
+
+### If the page looks unformatted
+
+If the page looks like plain black text and default browser buttons, the CSS is not loading. Check that the file was **extracted** and the three compliance files are in the **same directory**, then reopen `compliance.html`. Download a new ZIP after updates to obtain the latest version.
+
+### Safety and compliance
+
+Rule references and numerical requirements are not independently verified yet. Do not treat the prototype as statutory certification or a source of approved construction dimensions. Do not put private client records into a shared device's browser storage.
+
+---
+
+
 An interactive, collapsible construction knowledge map for teaching and learning about building stages, NCC provisions and Australian Standards.
 
 ## Features
