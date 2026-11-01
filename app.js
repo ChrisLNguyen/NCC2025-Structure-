@@ -19,7 +19,7 @@ function example(){return n('root','AT1 · SECTION 1 SITE SURVEY','root',[
 const clone=o=>JSON.parse(JSON.stringify(o));
 function valid(root){let ids=new Set(),total=0;function check(x,d){if(d>24||!x||typeof x.id!=='string'||typeof x.title!=='string'||!Array.isArray(x.children)||x.children.length>120||ids.has(x.id))throw Error('Invalid or duplicate node');ids.add(x.id);total++;if(total>600)throw Error('Maximum 600 nodes');x.type=['root','stage','element','ncc','standard','detail','decision'].includes(x.type)?x.type:'detail';x.notes=typeof x.notes==='string'?x.notes:'';x.shape=['rounded','rectangle','pill','diamond'].includes(x.shape)?x.shape:'rounded';x.colour=/^#[0-9a-fA-F]{6}$/.test(x.colour||'')?x.colour:'';x.linkBoard=typeof x.linkBoard==='string'?x.linkBoard:'';x.resourceUrl=typeof x.resourceUrl==='string'?x.resourceUrl:'';x.image=typeof x.image==='string'?x.image:'';x.children.forEach(c=>check(c,d+1));}check(root,0);return root}
 function current(){return maps[active].tree}function openBoard(id,record=true){if(!maps[id]||id===active)return;if(record){history.push(active);future=[]}active=id;selected=current().id;save();refreshProjects();render();fit();syncEditor();navigation()}function navigation(){$('backBoard').disabled=!history.length;$('forwardBoard').disabled=!future.length}function imageSource(x){return x.image||''}function walk(node,fn,parent=null){fn(node,parent);node.children.forEach(c=>walk(c,fn,node))}function find(id){let got=null;walk(current(),a=>{if(a.id===id)got=a});return got}function parentOf(id){let got=null;walk(current(),(a,p)=>{if(a.id===id)got=p});return got}function descendants(x){return x.children.reduce((s,c)=>s+1+descendants(c),0)}
-function save(){try{localStorage.setItem(STORE,JSON.stringify({maps,active}));$('stats').dataset.saved='yes'}catch(e){toast('Browser storage unavailable or full. Export a JSON backup.')}}
+function save(){const next=stateText();if(lastState&&next!==lastState){undoHistory.push(lastState);if(undoHistory.length>80)undoHistory.shift()}lastState=next;try{localStorage.setItem(STORE,next);$('stats').dataset.saved='yes'}catch(e){toast('Browser storage unavailable or full. Export a JSON backup.')}}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),3100)}
 function childrenOf(x){if(x.collapsed)return [];if(x.type==='decision'&&x.mode==='one'&&x.choice)return x.children.filter(k=>k.id===x.choice);return x.children}
 function arrange(){visible=[];function measure(x){const kids=childrenOf(x);x._height=Math.max(90,kids.length?kids.reduce((s,c)=>s+measure(c),0):90);return x._height}const root=current();measure(root);let maxDepth=0;function place(x,depth,top,p){const xx=35+depth*240,yy=top+x._height/2-30;visible.push({x,xx,yy,p});maxDepth=Math.max(maxDepth,depth);let y=top;childrenOf(x).forEach(c=>{place(c,depth+1,y,x);y+=c._height})}place(root,0,0,null);contentW=35+maxDepth*240+220;contentH=root._height+25}
@@ -47,5 +47,18 @@ $('exportSvg').onclick=()=>{const ns='http://www.w3.org/2000/svg',svg=document.c
 $('resetDemo').onclick=()=>{if(!confirm('Replace this map with the original teaching example? Export a backup first.'))return;maps[active].tree=example();selected=current().id;commit();fit()};
 try{const saved=JSON.parse(localStorage.getItem(STORE));if(saved&&saved.maps&&Object.keys(saved.maps).length){for(const m of Object.values(saved.maps))valid(m.tree);maps=saved.maps;active=maps[saved.active]?saved.active:Object.keys(maps)[0]}}catch(e){console.warn('Could not restore saved map',e)}
 if(!active){active='construction-demo';maps[active]={name:'Construction stages · example',tree:example()};save()}
-selected=current().id;refreshProjects();render();fit();syncEditor();navigation();window.addEventListener('resize',()=>{if(!drag)fit()});
+selected=current().id;lastState=stateText();
+let clip=null,undoHistory=[],lastState='';
+function stateText(){return JSON.stringify({maps,active})}
+function undoLast(){if(!undoHistory.length)return toast('Nothing to undo');const old=JSON.parse(undoHistory.pop());maps=old.maps;active=old.active;selected=current().id;lastState=stateText();localStorage.setItem(STORE,lastState);refreshProjects();render();fit();syncEditor()}
+function keyShortcuts(e){
+ if(e.target.closest('input,textarea,select,[contenteditable],dialog'))return;
+ const mod=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();
+ if(mod&&k==='z'){e.preventDefault();undoLast();return}
+ if(mod&&(k==='c'||k==='x')){e.preventDefault();const x=find(selected);if(!x)return;if(k==='x'&&x===current())return toast('Cannot cut root');clip=clone(x);if(k==='x'){const p=parentOf(selected);p.children=p.children.filter(a=>a.id!==selected);selected=p.id;commit();fit()}toast(k==='c'?'Shape copied':'Shape cut');return}
+ if(mod&&k==='v'){e.preventDefault();if(!clip)return toast('Copy a shape first');const p=find(selected),copy=clone(clip);walk(copy,x=>{x.id='copy-'+Date.now()+'-'+(++seq)});p.children.push(copy);p.collapsed=false;selected=copy.id;commit();fit();return}
+ if(!mod&&(e.key==='Delete'||e.key==='Backspace')){e.preventDefault();const p=parentOf(selected);if(!p)return;p.children=p.children.filter(x=>x.id!==selected);selected=p.id;commit();fit()}
+}
+document.addEventListener('keydown',keyShortcuts);
+refreshProjects();render();fit();syncEditor();navigation();window.addEventListener('resize',()=>{if(!drag)fit()});
 })();
